@@ -1,8 +1,9 @@
 #This function will create a dictionary to sort and track the inventory of reagents. Reagent are the keys and the inventory count is the value.
 import ast
+import pandas as pd
 from email_noti import send_noti
-from txt_func import write_txt
-from txt_func import read_txt
+from xlsx_func import write_xlsx
+from xlsx_func import read_xlsx
 
 #reagents ={'CLV': '0', 'RTN': '0', 'EXA': '0', 'EXB': '0', 'IMG': '0', 'QCB': '0', 'NSB': '0', 'CSR': '0', 'BLK': '0', 'SIP': '0', 'RXB': '0', 'RIP': '0', 'RXP': '0'}
 
@@ -16,16 +17,18 @@ print(prmpt)
 prmpt_input = input('What would you like to do?')
 for res in prmpt_input:
     if res == '1':
-        read_xlsx(excel_file)
         try:
-            reagents = ast.literal_eval(data_string)
+            excel_file = 'reagents.xlsx'
+            df = pd.read_excel(excel_file)
+            excel_dict = df.to_dict(orient='list')
+            inv_val = excel_dict['Quantity']
+            min_val = min(inv_val)
+            max_val = max(inv_val)
+            send_noti(min_value, max_value)
+            print(reagents)
         except (ValueError, SyntaxError):
             print('Error: Unable to convert the file content to a dictionary.')
-        min_value = min(reagents.values())
-        max_value = max(reagents.values())
-        send_noti(min_value, max_value)
-        print(reagents)
-        break
+            break
     if res == '2':
         try:
             with open('reagents.txt', 'r') as file:
