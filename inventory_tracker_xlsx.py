@@ -2,7 +2,7 @@
 import ast
 import pandas as pd
 from email_noti import send_noti
-from xlsx_func import write_xlsx
+from xlsx_func import add_xlsx
 from xlsx_func import read_xlsx
 
 #reagents ={'CLV': '0', 'RTN': '0', 'EXA': '0', 'EXB': '0', 'IMG': '0', 'QCB': '0', 'NSB': '0', 'CSR': '0', 'BLK': '0', 'SIP': '0', 'RXB': '0', 'RIP': '0', 'RXP': '0'}
@@ -17,24 +17,13 @@ print(prmpt)
 prmpt_input = input('What would you like to do?')
 for res in prmpt_input:
     if res == '1':
-        try:
-            excel_file = 'reagents.xlsx'
-            df = pd.read_excel(excel_file)
-            excel_dict = df.to_dict(orient='list')
-            inv_val = excel_dict['Quantity']
-            min_val = min(inv_val)
-            max_val = max(inv_val)
-            send_noti(min_value, max_value)
-            print(reagents)
-        except (ValueError, SyntaxError):
-            print('Error: Unable to convert the file content to a dictionary.')
-            break
+        excel_file = 'reagents.xlsx'
+        min_max(excel_file)
     if res == '2':
         try:
-            with open('reagents.txt', 'r') as file:
-                data_string = file.read()
+            df = pd.read_excel(excel_file)
         except FileNotFoundError:
-            print('Error: The file "reagents.txt" was not found.')
+            print('Error: The file was not found.')
             exit(1)
         try:
             reagents = ast.literal_eval(data_string)
@@ -50,24 +39,10 @@ for res in prmpt_input:
         print(reagents)
         break
     if res == '3':
-        try:
-            with open('reagents.txt', 'r') as file:
-                data_string = file.read()
-        except FileNotFoundError:
-            print('Error: The file "reagents.txt" was not found.')
-            exit(1)
-        try:
-            reagents = ast.literal_eval(data_string)
-        except (ValueError, SyntaxError):
-            print('Error: Unable to convert the file content to a dictionary.')
-        add_reag = input('What reagent inventory would you like to add to: ')
-        add_keyinv = input('How many would you like to add to the inventory: ')
-        add_keyinv = int(add_keyinv)
-        slct_reag = int(reagents[add_reag])
-        new_inv = slct_reag + add_keyinv
-        reagents[add_reag] = str(new_inv)
-        write_txt(reagents)
-        print(reagents)
+        reagent = input('What reagent inventory would you like to add to: ')
+        quantity = input('How many would you like to add to the inventory: ')
+        quantity = int(quantity)
+        add_xlsx(excel_file, reagent, quantity)
         break
     if res == '4':
         try:
