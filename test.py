@@ -1,11 +1,15 @@
 import pandas as pd
-excel_file = 'reagents.xlsx'
-reagent = 'CLV'
-quantity = 2
+import openpyxl
 
-df = pd.read_excel(excel_file)
-        #Modify the Dataframe as needed
-        #Define the reagent you want to change and the amount you want to change
-        #Define current inventory quantity
-row_val = df.loc[0, 'Quantity']
-print(row_val)
+def add_reag(excel_file, reagent, quantity):
+        excel_file = 'reagents.xlsx'
+        try:
+                df = pd.read_excel(excel_file)
+                new_row = pd.DataFrame({'Reagent': [reagent], 'Quantity': [quantity]})
+                df = pd.concat([df, new_row], ignore_index=True)
+                # Save the DataFrame back to the Excel file
+                df.to_excel(excel_file, index=False)
+                print(f'Reagent "{reagent}" added successfully.')
+        except FileNotFoundError:
+            print('Error: The file was not found.')
+add_reag('reagents.xlsx', 'RED', 2)

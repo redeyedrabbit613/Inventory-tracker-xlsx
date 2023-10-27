@@ -12,10 +12,10 @@ def min_max(excel_file):
         min_value = min(inv_val)
         max_value = max(inv_val)
         send_noti(min_value, max_value)
-        print(reagents)
-        exit(1)
+        print(df)
+        exit()
     except(ValueError, SyntaxError):
         print('Error: Unable to convert the file content to a dictionary.')
-        exit(1)
+        exit()
 
 

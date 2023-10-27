@@ -1,54 +1,72 @@
 #This function will write the reagent list into an excel file.
 import pandas as pd
+import openpyxl
 
 #data = {'Reagent':['CLV', 'RTN', 'EXA', 'EXB', 'IMG', 'QCB', 'NSB', 'CSR', 'BLK', 'SIP', 'RXB', 'RIP', 'RXP'],
         #'Quantity':[34, 34, 13, 8, 17, 17, 34, 18, 18, 17, 18, 18, 18]}
 
-excel_file = 'reagents.xlsx'
+
 def read_xlsx(excel_file):
-    excel_file = 'reagents.xlsx'
     try:
         df = pd.read_excel(excel_file)
-        print(df)   
+        print(df)
+        exit()   
     except FileNotFoundError:
         print('Error: The file "reagents.xlsx" was not found.')
-        exit(1)
+        exit()
 
 def add_xlsx(excel_file, reagent, quantity):
-    #load the excel file
-    excel_file = 'reagents.xlsx'
+    reagent_dic= {'CLV': 0, 'RTN': 1, 'EXA': 2, 'EXB': 3, 'IMG': 4, 'QCB': 5, 'NSB': 6, 'CSR': 7, 'BLK': 8, 'SIP': 9, 'RXB': 10, 'RIP': 11, 'RXP': 12}
     try:
+        #convert the reagent input as a value in the reagent_dic
+        reagent = reagent_dic[reagent] 
+        #load .xlsx file
         df = pd.read_excel(excel_file)
-        #Modify the Dataframe as needed
-        #Define the reagent you want to change and the amount you want to change
-        quantity = int(quantity)
-        #Change the quantity of a specific reagent
-        df.loc[df['Reagent'] == reagent, 'Quantity'] = quantity
-        #Save the modified DataFrame back to the Excel file
+        #look up reagent inventory value and assign it as row_val
+        row_val = df.loc[reagent, 'Quantity']
+        #subtract the row_val from the quantity input and assign it as row_val
+        row_val = row_val + quantity 
+        #update the new inventory value for the inventory input as the new row_val value
+        df.loc[reagent, 'Quantity'] = row_val
+        #write to excel file
         df.to_excel(excel_file, index=False)
         print(df)
+        exit()
     except FileNotFoundError:
         print('Error: The file "reagents.xlsx" was not found.')
-        exit(1)
+        exit()
 
 def sub_xlsx(excel_file, reagent, quantity):
-    #load the excel file
-    
+    reagent_dic= {'CLV': 0, 'RTN': 1, 'EXA': 2, 'EXB': 3, 'IMG': 4, 'QCB': 5,'NSB': 6, 'CSR': 7, 'BLK': 8, 'SIP': 9, 'RXB': 10, 'RIP': 11, 'RXP': 12}
     try:
+        #convert the reagent input as a value in the reagent_dic
+        reagent = reagent_dic[reagent] 
+        #load .xlsx file
         df = pd.read_excel(excel_file)
-        #Modify the Dataframe as needed
-        #Define the reagent you want to change and the amount you want to change
-        quantity = int(quantity)
-        #Define current inventory quantity
-        row_val = df.loc[df['Reagent'] == reagent, 'Quantity'] 
-        col_val = 'Quantity'
-        current = df.loc[row_val, col_val]
-        #Change the quantity of a specific reagent
-        row_val = quantity - current
-        #Save the modified DataFrame back to the Excel file
+        #look up reagent inventory value and assign it as row_val
+        row_val = df.loc[reagent, 'Quantity']
+        #subtract the row_val from the quantity input and assign it as row_val
+        row_val = row_val - quantity 
+        #update the new inventory value for the inventory input as the new row_val value
+        df.loc[reagent, 'Quantity'] = row_val
+        #write to excel file
         df.to_excel(excel_file, index=False)
         print(df)
+        exit()
     except FileNotFoundError:
         print('Error: The file "reagents.xlsx" was not found.')
-        exit(1)
-sub_xlsx('reagents.xlsx', 'CLV', 2)
+        exit()
+
+def add_reag(excel_file, reagent, quantity):
+    try:
+        df = pd.read_excel(excel_file)
+        new_row = pd.DataFrame({'Reagent': [reagent], 'Quantity': [quantity]})
+        df = pd.concat([df, new_row], ignore_index=True)
+        # Save the DataFrame back to the Excel file
+        df.to_excel(excel_file, index=False)
+        print(df)
+        print(f'Reagent "{reagent}" added successfully.')
+        exit()
+    except FileNotFoundError:
+        print('Error: The file was not found.')
+        exit()
