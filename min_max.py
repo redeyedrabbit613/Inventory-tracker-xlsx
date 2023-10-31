@@ -1,4 +1,5 @@
 #This funciton will convert the data to a dictionary. It will then identify the min and max value for the dictionary.
+import sys
 import pandas as pd
 from email_noti_xlsx import send_noti
 #load the Excel file into a DataFrame
@@ -13,9 +14,9 @@ def min_max(excel_file):
         max_value = max(inv_val)
         send_noti(min_value, max_value)
         print(df)
-        exit()
+        sys.exit(0)
     except(ValueError, SyntaxError):
         print('Error: Unable to convert the file content to a dictionary.')
-        exit()
+        sys.exit(1)
 
 
